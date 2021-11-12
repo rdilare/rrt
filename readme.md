@@ -1,10 +1,7 @@
 ## Assignment status
 1. Implemented RRT and RRT* algorithm in python.
-2. Implemented RRT in C++.
-   1. The code is not implemented properly.
-   2. It often shows Segmentation fault (core dumped) error.
-   3. Although sometimes it works fine. (I couldn't figure out the problem yet.)
-3. visualization is also available in python.
+2. Implemented RRT and RRT* in C++.
+3. visualization of nodes, tree, path, obstacles is also available.
 
 
 ## variables defination
@@ -13,6 +10,7 @@
 - `goal_threshold` = threshold for reaching goal.
 - `loop_count` = max. no. of loop iterations.
 - `max_segment_length` = max. distance for new_node from tree.
+- `neighborhood_radius` = for rrt* algorithm.
 
 
 
@@ -40,11 +38,6 @@ use the following command to run RRT*.
 ```shell
 python main_rrt*.py
 ```
-run the following command for visualizing the solution.
-```shell
-python visualization.py
-```
-
 ### C++
 
 go to c++ folder and compile the code. (compiled a.out file should already be there).
@@ -58,4 +51,14 @@ g++ rrt.cpp
 after compilation run the binary file
 ```shell
 ./a.out
+```
+
+## Visualization
+
+- nodes, tree, path, obstacles can be visualized
+- after running the algorithm (in python or C++) got to rrt folder and run the python code for visualization.
+
+```shell
+cd rrt
+python visualization.py
 ```
