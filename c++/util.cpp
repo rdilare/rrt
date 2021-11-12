@@ -34,10 +34,10 @@ float getDistanceBetween(Node* n1, Node* n2){
     return dist;
 }
 
-Node getNodeOnLine(Node* p, Node* q, float max_distance=10){
+Node* getNodeOnLine(Node* p, Node* q, float max_distance=10){
     float dist = getDistanceBetween(p,q);
     if(dist <= max_distance){
-        return *q;
+        return q;
     }
     float x1 = p->getPos().x;
     float y1 = p->getPos().y;
@@ -46,7 +46,8 @@ Node getNodeOnLine(Node* p, Node* q, float max_distance=10){
     float x,y;
     x = x1 + (x2-x1)*(max_distance/dist);
     y = y1 + (y2-y1)*(max_distance/dist);
-    return Node(x,y);
+    q->setPos(x,y);
+    return q;
 }
 
 
@@ -77,29 +78,20 @@ float genRandomNumber(float low, float high){
 vector<Node*> getNeighborNodes(Node* node, Graph* graph, float neighbor_radius){
     vector<pair<Node*,float>> neighbor_nodes;
     float cost;
-    vector<Node>* all_nodes = graph->getNodes();
-    vector<Node>::iterator it = all_nodes->begin();
-    // for(Node n : all_nodes){
-    //     float dist = getDistanceBetween(node, &n);
-    //     if(dist <= neighbor_radius){
-    //         cost = n.getCost() + dist;
-    //         neighbor_nodes.push_back(pair<Node*,float>(&n,cost));
-    //     }
-    // }
-
-    for(it; it!=all_nodes->end();it++){
-        float dist = getDistanceBetween(node, &(*it));
+    vector<Node*> all_nodes = graph->getNodes();
+    for(auto n : all_nodes){
+        float dist = getDistanceBetween(node, n);
         if(dist <= neighbor_radius){
-            cost = it->getCost() + dist;
-            neighbor_nodes.push_back(pair<Node*,float>(&(*it),cost));
+            cost = n->getCost() + dist;
+            neighbor_nodes.push_back(pair<Node*,float>(n,cost));
         }
-
     }
 
 
     //sorting neighbor_nodes
     
     sort(neighbor_nodes.begin(), neighbor_nodes.end(), cmp);
+
 
     vector<Node*> sorted_neighbor_nodes;
     for(auto elem : neighbor_nodes){
@@ -172,38 +164,24 @@ bool isLineOnPolygon(Point p, Point q, vector<Point> polygon){
 
 
 
-Node sampleNode(vector<float> xlim, vector<float> ylim){
+Node* sampleNode(vector<float> xlim, vector<float> ylim){
     float x = genRandomNumber(xlim[0], xlim[1]);
     float y = genRandomNumber(ylim[0], ylim[1]);
-    return Node(x,y);
+    Node* new_node = new Node(x,y);
+    return new_node;
 }
-
-// Node* nearestNode(Graph& graph, Node* newNode){
-//     vector<Node*> all_nodes = graph.getNodes();
-//     float min_dist = inf;
-//     Node* nearest_node;
-//     for(Node* n: all_nodes){
-//         float dist = getDistanceBetween(n,newNode);
-//         if (dist<min_dist){
-//             min_dist = dist;
-//             nearest_node = n;
-//         }
-//     }
-//     return nearest_node;
-// }
 
 
 
 Node* nearestNode(Graph& graph, Node* newNode){
-    vector<Node>* all_nodes = graph.getNodes();
+    vector<Node*> all_nodes = graph.getNodes();
     float min_dist = inf;
     Node* nearest_node;
-    vector<Node>::iterator it = all_nodes->begin();
-    for(it; it!=all_nodes->end(); it++){
-        float dist = getDistanceBetween(&(*it),newNode);
+    for(auto n : all_nodes){
+        float dist = getDistanceBetween(n,newNode);
         if (dist<min_dist){
             min_dist = dist;
-            nearest_node = &(*it);
+            nearest_node = n;
         }
     }
     return nearest_node;

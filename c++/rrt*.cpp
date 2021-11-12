@@ -8,13 +8,14 @@ int main(){
     vector<float> xlim{-20,30};
     vector<float> ylim{-20,30};
     float goal_threshold = 5;
-    int loop_count = 1000;
-    float max_segment_length = 1.5;
+    int loop_count = 2000;
+    float max_segment_length = 2;
+
+    float neighborhood_radius = 5;
 
     string filename = "../data.py";
 
-
-    Node* start_node = new Node(0, -10, 0.0);
+    Node* start_node = new Node(-10, -10, 0.0);
     Node* goal_node = new Node(17, 17);
 
     Obstacle o1 = Obstacle(vector<Point>{{-15,5},{-10,2},{-2,3},{-5,15},{-8,10}});
@@ -33,15 +34,13 @@ int main(){
 
     Graph graph = Graph();
     graph.addNode(start_node);
-    // Node* ptr_gn = &goal_node;
+    // graph.addNode(goal_node);
 
-    // graph.addNode(&goal_node);
     cout<<"start_node: ("<<start_node->getPos().x<<","<<start_node->getPos().y<<")"<<endl;
     cout<<"goal_node: ("<<goal_node->getPos().x<<","<<goal_node->getPos().y<<")"<<endl;
 
     bool isPath = false;
     int i = 0;
-
     while (i<=loop_count){
         i+=1;
         print({"i: ",to_string(i-1)});
@@ -56,16 +55,20 @@ int main(){
             continue;
         }
         Node* node_within_lim = getNodeOnLine(nearest_node, new_node, max_segment_length);
-        node_within_lim->setParent(nearest_node);
+        // --------------------------------------------
+        vector<Node*> sorted_neighbor_nodes = getNeighborNodes(node_within_lim, &graph, neighborhood_radius);
+        updateNeighbors(node_within_lim, sorted_neighbor_nodes, &map);
         graph.addNode(node_within_lim);
+        // --------------------------------------------
+        
 
         // cout<<"node_within_lim: ("<<node_within_lim.getPos().x<<","<<node_within_lim.getPos().y<<")"<<endl;
         // cout<<"ptr_nwl: ("<<ptr_nwl->getPos().x<<","<<ptr_nwl->getPos().y<<")"<<endl;
         if(isGoalReached(node_within_lim, goal_node, &map, goal_threshold) && (!isPath)){
             goal_node->setParent(node_within_lim);
+            goal_node->setCost(calculateCost(node_within_lim, goal_node));
             graph.addNode(goal_node);
             isPath = true;
-            break;
         }
     }
     if ( ! isPath){

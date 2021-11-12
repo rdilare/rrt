@@ -1,16 +1,17 @@
 from objects import *
-from util import NearestNode, getNeighborNodes, getNodeOnLine, isGoalReached, isLineOnObstacle, isNodeInObstacle, sampleNode, updateNeighbors
-from visualization import Viz
+from util import NearestNode, calculateCost, getNeighborNodes, getNodeOnLine, isGoalReached, isLineOnObstacle, isNodeInObstacle, sampleNode, updateNeighbors
 
 import sys
 
 xlim = (-20,30)
 ylim = (-20,30)
 goal_threshold = 5
-loop_count = 1000
+loop_count = 2000
 max_segment_length = 2
 
-neighborhood_radius = 10
+neighborhood_radius = 5
+
+filename = "../data.py"
 
 start_node = Node(-10,-10, cost=0)
 goal_node = Node(17,17)
@@ -23,7 +24,7 @@ obstacles = [Obstacle([(-15,5),(-10,2),(-2,3),(-5,15),(-8,10)]),
 map = ConfigurationSpace(xlim, ylim, obstacles)
 graph = Graph()
 graph.addNode(start_node)
-graph.addNode(goal_node)
+# graph.addNode(goal_node)
 
 isPath = False
 i = 0
@@ -41,13 +42,15 @@ while i<=loop_count:
     node_within_lim = getNodeOnLine(nearest_node, new_node, max_distance=max_segment_length)
     # -------------------------------
     sorted_neighbor_nodes = getNeighborNodes(node_within_lim,graph,neighborhood_radius)
-    graph.addNode(node_within_lim)
     updateNeighbors(node_within_lim, sorted_neighbor_nodes, map)
+    graph.addNode(node_within_lim)
 
     # graph.addEdge(nearest_node, node_within_lim)
     # -------------------------------
     if isGoalReached(node_within_lim, goal_node, map, threshold=goal_threshold) and not isPath:
-        # graph.addEdge(node_within_lim, goal_node)
+        goal_node.setParent(node_within_lim)
+        goal_node.setCost(calculateCost(node_within_lim, goal_node))
+        graph.addNode(goal_node)
         isPath = True
         # break
 
@@ -58,7 +61,7 @@ else:
     print("saving path to file: data.py")
 
 
-with open("data.py",'w') as f:
+with open(filename,'w') as f:
     sn = start_node.getPos()
     gn = goal_node.getPos()
     tree = []

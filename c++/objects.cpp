@@ -28,14 +28,18 @@ class Node{
     struct Point getPos(){
         return this->pos;
     }
+    void setPos(float x, float y){
+        this->pos.x = x;
+        this->pos.y = y;
+    }
     float getCost(){
         return this->cost;
     }
-    Node* getParent(){
-        return this->parent;
-    }
     void setCost(float cost){
         this->cost = cost;
+    }
+    Node* getParent(){
+        return this->parent;
     }
     void setParent(Node* p){
         this->parent = p;
@@ -57,18 +61,18 @@ class Obstacle{
 
 class Graph{
     public:
-    vector<Node> nodes;
+    vector<Node*> nodes;
 
-    Node* addNode(Node node){
+    void addNode(Node* node){
         this->nodes.push_back(node);
-        return &(*(nodes.end()-1));
+        // return &(*(nodes.end()-1));
     }
-    vector<Node>* getNodes(){
+    vector<Node*>& getNodes(){
         // vector<Node*> Ns;
         // for(Node n : this->nodes){
         //     Ns.push_back(&n);
         // }
-        return &this->nodes;
+        return this->nodes;
     }
 };
 

@@ -1,6 +1,5 @@
 from objects import *
-from util import NearestNode, getNeighborNodes, getNodeOnLine, isGoalReached, isLineOnObstacle, isNodeInObstacle, sampleNode, updateNeighbors
-from visualization import Viz
+from util import NearestNode, getNodeOnLine, isGoalReached, isLineOnObstacle, isNodeInObstacle, sampleNode
 
 import sys
 
@@ -10,6 +9,7 @@ goal_threshold = 5
 loop_count = 1000
 max_segment_length = 2
 
+filename = "../data.py"
 
 start_node = Node(-10,-10, cost=0)
 goal_node = Node(17,17)
@@ -53,7 +53,7 @@ else:
     print("saving path to file: data.py")
 
 
-with open("data.py",'w') as f:
+with open(filename,'w') as f:
     sn = start_node.getPos()
     gn = goal_node.getPos()
     tree = []

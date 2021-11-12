@@ -1,5 +1,3 @@
-from objects import Graph
-
 import matplotlib.pyplot as plt
 
 from data import *
